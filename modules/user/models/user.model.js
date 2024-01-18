@@ -9,12 +9,17 @@ const userSchema = new Schema({
         type: Schema.Types.String,
         required: [true, 'user name is required'],
         trim: true,
+        unique: true,
     },
     userId: {
         type: Schema.Types.String,
         required: [true, 'user name is required'],
         trim: true,
     },
-});
+}, {
+    timestamps: true,
+    versionKey: false,
+},);
 
 const UserModel = model('users', userSchema);
+module.exports = UserModel;
