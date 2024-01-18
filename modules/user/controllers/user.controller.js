@@ -1,4 +1,6 @@
 const { v4: uuid } = require('uuid');
+const redis = require('redis');
+const { redisClient } = require('../configs/redis');
 const UserModel = require('../models/user.model');
 
 module.exports = {
@@ -35,16 +37,29 @@ module.exports = {
 
     getUsers: async (req, res) => {
         try {
-            const { page = 1, limit = 12 } = req.query;
-            const skip = Number(limit) * (Number(page) - 1);
 
-            const user = await UserModel.find().skip(skip).limit(limit);
+            const { page = 1 } = req.query;
+            const limit = 20;
+            const skip = Number(limit) * (Number(page) - 1);
+            const cacheKey = `users_${page}`;
+            const expireInHours = 24 * 60 * 60; // 24h
+
+            let users = await redisClient.get(cacheKey);
+            if (!users) {
+                console.log(`get users from DB`);
+                users = await UserModel.find().skip(skip).limit(limit);
+                await redisClient.set(cacheKey, JSON.stringify(users), 'EX', expireInHours);
+            } else {
+                users = JSON.parse(users);
+            }
+
             return res.status(200).send({
                 success: true,
                 message: 'Users fetched successfully',
-                data: user
+                data: users
             });
         } catch (e) {
+            console.error({ e });
             return res.status(500).send({
                 success: false,
                 message: 'An error occur',
