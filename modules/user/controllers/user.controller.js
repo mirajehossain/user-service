@@ -20,6 +20,7 @@ module.exports = {
             }
 
             const user = await UserModel.create(payload);
+            await redisClient.flushDb();
             return res.status(201).send({
                 success: true,
                 message: 'User created successfully',
