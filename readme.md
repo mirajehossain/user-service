@@ -37,6 +37,7 @@ The User API service provides CRUD (Create, Read, Update, Delete) operations for
 ## Running the Project
 ```bash
     cd modules/user #navigate to user module
+    cp example.env .env # copy env
     docker compose up --build -d # run docker compose for build and start the service
 ```
 
@@ -45,6 +46,7 @@ The User Worker is responsible for handling background tasks related to user dat
 
 ```bash
 cd modules/worker
+cp example.env .env # copy env
 docker build --no-cache -t user-worker:latest .
 docker run user-worker:latest
 ```
