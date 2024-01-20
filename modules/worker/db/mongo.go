@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -19,13 +20,14 @@ var (
 func LoadEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file", err)
 	}
 }
 
 func ConnectDB() error {
 	LoadEnv()
 	dbURI := os.Getenv("MONGO_URI")
+	fmt.Println(dbURI)
 	if dbURI == "" {
 		log.Fatal("MONGODB_URL environment variable is not set.")
 	}

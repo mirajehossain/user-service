@@ -16,7 +16,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
+app.get('/', (req, res) => {
+    return res.send({ success: true, message: 'User service API' })
+})
+
 app.use('/', routes);
+
 
 app.use((req, res, next) => {
     return res.status(404).send({
@@ -26,6 +31,7 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+    console.log(`Internal server error ${err.message}`);
     return res.status(500).send({
         success: false,
         message: 'Internal server error',

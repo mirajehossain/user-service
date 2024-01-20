@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  db:
+    image: mongo:5
+    container_name: db
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+      MONGO_INITDB_DATABASE: opika
+
+
+  redis:
+    image: redis:5
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+
+  user-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user-api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+
+networks:
+  my-network:
+    external: true

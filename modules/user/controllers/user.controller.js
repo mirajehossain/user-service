@@ -1,5 +1,4 @@
 const { v4: uuid } = require('uuid');
-const redis = require('redis');
 const { redisClient } = require('../configs/redis');
 const UserModel = require('../models/user.model');
 
@@ -45,6 +44,7 @@ module.exports = {
             const expireInHours = 24 * 60 * 60; // 24h
 
             let users = await redisClient.get(cacheKey);
+            console.log({ users })
             if (!users) {
                 console.log(`get users from DB`);
                 users = await UserModel.find().skip(skip).limit(limit);
